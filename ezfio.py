@@ -294,13 +294,17 @@ def CollectSystemInfo():
             cpuFreqMHz = int(round(float(grep(cpuinfo, r'clock')[0].split(': ')[1][:-3])))
     else:
         model_names = grep(cpuinfo, r'model name')
-        cpu = model_names[0].split(': ')[1].replace('(R)', '').replace('(TM)', '')
+        if not model_names:
+            cpu = "UNKNOWN"
+        else:
+            cpu = model_names[0].split(': ')[1].replace('(R)', '').replace('(TM)', '')
         cpuCores = len(model_names)
         try:
             code, dmidecode, err = Run(['dmidecode', '--type', 'processor'])
             cpuFreqMHz = int(round(float(grep(dmidecode.split("\n"), r'Current Speed')[0].rstrip().lstrip().split(" ")[2])))
         except:
-            cpuFreqMHz = int(round(float(grep(cpuinfo, r'cpu MHz')[0].split(': ')[1])))
+            cpuFreqMHz = 0
+            #cpuFreqMHz = int(round(float(grep(cpuinfo, r'cpu MHz')[0].split(': ')[1])))
 
 
 def VerifyContinue():
